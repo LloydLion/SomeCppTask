@@ -1,11 +1,13 @@
 #include <iostream>
 #include "cstring.hpp"
+#include "stringbuilder.hpp"
 
 using namespace std;
 
-int readUtilDelimeter(const char* delimeters, char* buffer)
+mstring readUtilDelimeter(const char* delimeters, stringbuilder* buffer = nullptr)
 {
-    char* bufferPointer = buffer;
+    if (buffer == nullptr)
+        buffer = new stringbuilder();
 
     bool skipNewline = strcontains('\n', delimeters) == false;
 
@@ -21,13 +23,10 @@ int readUtilDelimeter(const char* delimeters, char* buffer)
 
         if (isDelimeter)
         {
-            *bufferPointer = '\0';
             break;
         }
-        else *bufferPointer = newChar;
-
-        bufferPointer++;
+        else buffer->push(newChar);
     }
 
-    return bufferPointer - buffer;
+    return buffer->finalize();
 }

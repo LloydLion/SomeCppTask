@@ -8,22 +8,25 @@ int main()
 
     cin.unsetf(ios_base::skipws); //Read ALL characters (include [space], \t, \n, \r)
 
-    char buffer[60];
+    int inputBufferSize = 20;
+    char* inputBuffer = new char[inputBufferSize];
+
     int minEnterWordLen = ~(1 << 31); //Int max value
 
     while (true)    
     {
-        readUtilDelimeter(delimeters, buffer);
+        mstring input = readUtilDelimeter(delimeters, new stringbuilder(&inputBuffer, &inputBufferSize));
 
-        char* words[15];
-        int wordCount = strsplit(buffer, wordSeporator, words);
+        splitResult sr = strsplit(input.pointer, wordSeporator);
+        int wordCount = sr.count;
+        char** words = sr.pointers;
 
         bool needProcess = false;
-        int wordLens[15];
+        int* wordLens = new int[wordCount];
 
         for (int i = 0; i < wordCount - 1; i++)
         {
-            wordLens[i] = words[i + 1] - words[i] - 1; //Distance between pointer equal word len + 1 (1 - seporator aka \0)
+            wordLens[i] = words[i + 1] - words[i] - 1; //Distance between pointers equals word len + 1 (1 - seporator aka \0)
             needProcess |= wordLens[i] % 2 == 0;
         }
         //This magic doesn't work for last word
